@@ -17,6 +17,10 @@ node -v
 INSTALLING PM2 IN HOME DIRECTORY:
 npm install -g pm2 -y
 
-INSTALLING TensorFlow IN WORKING DIRECTORY:
-npm init
+CREATING REACT APP in WORKING DIRECTORY:
+npm init react-app machinelearningapp
+
+INSTALLING TensorFlow IN machinelearningapp DIRECTORY:
 npm install --save @tensorflow/tfjs
+
+
