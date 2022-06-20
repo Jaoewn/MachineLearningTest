@@ -72,7 +72,7 @@ function displayResults() {
 	document.getElementById('textbox').value='';
 	document.getElementById('results').innerHTML='';
 	document.getElementById('textbox').value=data;
-	document.getElementById('results').innerHTML='Calculating...'
+	document.getElementById('results').innerHTML='Input data in text box'
 	let r = document.getElementById('textbox'); 
 	r.addEventListener('input', function(e) { // listening for updates to textbox
 		document.getElementById('results').innerHTML='Calculating...'
