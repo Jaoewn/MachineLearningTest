@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { createArray } from './train';
+import { createArray } from './components/train';
 
 function App() {
   const [selectedFile, setSelectedFile] = useState();
@@ -40,7 +40,7 @@ function App() {
           accept=".csv" 
           onChange={changeHandler}
         />
-        <button onClick={handleSubmission}>Submit</button>
+        <button hidden={isFilePicked ? "" : "hidden"} onClick={handleSubmission}>Submit</button>
       </div>
       <div>
         <div><textarea id="textbox" rows="20" cols="100"></textarea></div>
