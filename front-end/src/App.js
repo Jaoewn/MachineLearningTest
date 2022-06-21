@@ -1,5 +1,21 @@
+import { useEffect, useState } from 'react';
+import { createArray } from './train';
 
 function App() {
+  const [selectedFile, setSelectedFile] = useState();
+	const [isFilePicked, setIsFilePicked] = useState(false);
+
+  const changeHandler = (e) => {
+		setSelectedFile(e.target.files[0]);
+		setIsFilePicked(true);
+	};
+
+	const handleSubmission = () => {
+    console.log("submit!")
+    if (isFilePicked) {createArray(selectedFile)};
+	};
+
+
   return (
     <div className="App">
       <header className="App-header">
@@ -15,9 +31,16 @@ function App() {
           Learn React
         </a>
       </header>
+
+      {/* MY CODE */}
       <div>
         <h1>INPUT CSV HERE: </h1>
-        <input type="file" accept=".csv" id="demoA"/>
+        <input
+          type="file"
+          accept=".csv" 
+          onChange={changeHandler}
+        />
+        <button onClick={handleSubmission}>Submit</button>
       </div>
       <div>
         <div><textarea id="textbox" rows="20" cols="100"></textarea></div>
