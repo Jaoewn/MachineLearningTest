@@ -9,9 +9,9 @@ function App() {
   const [neuralNet, setNeuralNet] = useState(); // keeps track of neural net
 
   useEffect( () => {
-    setNeuralNet(initNetwork());
+    // setNeuralNet(initNetwork());
   }, []) // ensures initNetwork() only runs once
-  
+
   // FILE HANDLING
   const fileChangeHandler = (e) => {
 		setSelectedFile(e.target.files[0]);
@@ -19,7 +19,7 @@ function App() {
 	};
 	const handleFileSubmission = () => {
     console.log("submit!")
-    if (isFilePicked) {createArray(selectedFile)};
+    if (isFilePicked) {setNeuralNet(initNetwork(selectedFile))};
 	};
 
   // TEXTBOX HANDLING

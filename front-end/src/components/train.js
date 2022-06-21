@@ -7,7 +7,7 @@ const createArray = (csv) => {
     for (let i in data) {
       if (data[i] !== '') {
         data[i] = data[i].split(",");
-        data[i] = {input: data[i][0], output: data[i][1]};
+        data[i] = {input: [data[i][0]], output: [data[i][1]]};
       }
     }
     if (data[data.length -1] === '') {data.pop()}; // popping last item if its empty
