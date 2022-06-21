@@ -1,53 +1,34 @@
 import { createArray } from './train';
 const { Layer, Network, Architect, Trainer } = window.synaptic; // Gathering components from Synaptic.js
 
-function initNetwork(csv) {
-	// This function initalizes the neural network. 
-
-	// var inputLayer = new Layer(2); // 2 neurons
-	// var hiddenLayer = new Layer(3); // 3 neurons
-	// var outputLayer = new Layer(1); // 1 neuron
-
-	// inputLayer.project(hiddenLayer); // connects inputLayer to hiddenLayer (all-to-all)
-	// hiddenLayer.project(outputLayer); // connects hiddenLayer to outputLayer (all-to-all)
-
-	// var myNetwork = new Network({
-	// 	input: inputLayer,
-	// 	hidden: [hiddenLayer],
-	// 	output: outputLayer
-	// });
-
-    var myNetwork = new Architect.Perceptron(2,3,1);
-
+function initNetwork(csv) { // This function initalizes the neural network. 
+    var myNetwork = new Architect.Perceptron(2,3,1); // 1 input, 3 hidden, 1 output
 	// train the network 
 	var learningRate = 0.3; // controls how much to change the model in response to the estimated error each time the model weights are updated
 	var iterations = 20000; // amount of training iterations
 	var myTrainer = new Trainer(myNetwork);
-    // let trainingSet = [ 
-    //     {input: [0,0], output: [0]},
-    //     {input: [0,1], output: [1]},
-    //     {input: [1,0], output: [1]},
-    //     {input: [1,1], output: [0]},
-    // ];
     const trainNetwork = async () => {
-        const trainingSet = await createArray(csv);
-        myTrainer.trainAsync(trainingSet, {
-            rate: learningRate,
-            iterations: iterations,
-            error: 0.003,
-            log: 100,
-            cost: Trainer.cost.CROSS_ENTROPY
-        }).then(results => console.log('done!', results));
+        createArray(csv).then(trainingSet => {
+            console.log("trainingSet: ", trainingSet);
+            myTrainer.trainAsync(trainingSet, {
+                rate: learningRate,
+                iterations: iterations,
+                error: 0.0001,
+                log: 10000,
+                cost: Trainer.cost.CROSS_ENTROPY
+                }).then(results => console.log('training done!', results));
+        });
+        // myTrainer.XOR();
     }
     trainNetwork();
 	return myNetwork;
 }
 
-function calculateScore(input, network) {
-	// This function scores an input from 0...1 based on the trained neural network.
+function calculateScore(input, network) { // This function scores an input from 0...1 based on the trained neural network.
     var m = '';
-	// var score=network.activate([input[0], input[1]]) // activating the network with input
-    var score=network.activate([input])
+    console.log([parseInt(input[0]), parseInt(input[1])]);
+	var score=network.activate([parseInt(input[0]), parseInt(input[1])]) // activating the network with input
+    //var score=network.activate(input); // don't need to put input in an array
 	console.log("score"+score);
 	var pscore=parseFloat(score).toFixed(3);
 	console.log("pscore = "+pscore);
@@ -64,9 +45,7 @@ function calculateScore(input, network) {
 	return input;
 }
    
-
-function displayResults(textbox, network) {
-    // data from the HTML's textbox
+function displayResults(textbox, network) { // This function triggers calculateScore
 	let data = textbox.replace(/(\r\n|\n|\r)/gm, ""); // cleaning data
     document.getElementById('results').innerHTML='Calculating...';
     calculateScore(data, network);

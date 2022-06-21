@@ -18,7 +18,7 @@ function App() {
 		setIsFilePicked(true);
 	};
 	const handleFileSubmission = () => {
-    console.log("submit!")
+    console.log("submitted file!")
     if (isFilePicked) {setNeuralNet(initNetwork(selectedFile))};
 	};
 
@@ -27,7 +27,7 @@ function App() {
 		setTextBox(e.target.value);
 	};
   const handleTextSubmission = () => {
-    console.log("submit!")
+    console.log("submitted text!")
     displayResults(textBox, neuralNet);
 	};
 
@@ -51,7 +51,7 @@ function App() {
       <div>
         <div><textarea id="textbox" rows="2" cols="30" onChange={textChangeHandler}></textarea></div>
         <button onClick={handleTextSubmission}>Submit</button>
-        <div id="results"></div>
+        <div id="results">PLEASE UPLOAD TRAINING CSV FIRST</div>
       </div>
     </div>
   );
