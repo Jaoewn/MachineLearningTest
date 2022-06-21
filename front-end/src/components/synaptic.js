@@ -1,55 +1,48 @@
-const { Layer, Network } = window.synaptic; // Gathering components from Synaptic.js
+const { Layer, Network, Architect, Trainer } = window.synaptic; // Gathering components from Synaptic.js
 
 function initNetwork() {
 	// This function initalizes the neural network. 
 
-	var inputLayer = new Layer(2); // 2 neurons
-	var hiddenLayer = new Layer(3); // 3 neurons
-	var outputLayer = new Layer(1); // 1 neuron
+	// var inputLayer = new Layer(2); // 2 neurons
+	// var hiddenLayer = new Layer(3); // 3 neurons
+	// var outputLayer = new Layer(1); // 1 neuron
 
-	inputLayer.project(hiddenLayer); // connects inputLayer to hiddenLayer (all-to-all)
-	hiddenLayer.project(outputLayer); // connects hiddenLayer to outputLayer (all-to-all)
+	// inputLayer.project(hiddenLayer); // connects inputLayer to hiddenLayer (all-to-all)
+	// hiddenLayer.project(outputLayer); // connects hiddenLayer to outputLayer (all-to-all)
 
-	var myNetwork = new Network({
-		input: inputLayer,
-		hidden: [hiddenLayer],
-		output: outputLayer
-	});
+	// var myNetwork = new Network({
+	// 	input: inputLayer,
+	// 	hidden: [hiddenLayer],
+	// 	output: outputLayer
+	// });
+
+    var myNetwork = new Architect.Perceptron(2,3,1);
 
 	// train the network 
 	var learningRate = 0.3; // controls how much to change the model in response to the estimated error each time the model weights are updated
 	var iterations = 20000; // amount of training iterations
-	for (var i = 0; i < iterations; i++)
-	{
-		// 0,0 => 0
-		myNetwork.activate([0,0]);
-		myNetwork.propagate(learningRate, [0]);
+	var myTrainer = new Trainer(myNetwork);
+    let trainingSet = [ 
+        {input: [0,0], output: [0]},
+        {input: [0,1], output: [1]},
+        {input: [1,0], output: [1]},
+        {input: [1,1], output: [0]},
+    ];
+    myTrainer.trainAsync(trainingSet, {
+        rate: learningRate,
+        iterations: iterations,
+        error: 0.003,
+        log: 100,
+        cost: Trainer.cost.CROSS_ENTROPY
+    }).then(results => console.log('done!', results));
 
-		// 0,1 => 1
-		myNetwork.activate([0,1]);
-		myNetwork.propagate(learningRate, [1]);
-
-		// 1,0 => 1
-		myNetwork.activate([1,0]);
-		myNetwork.propagate(learningRate, [1]);
-
-		// 1,1 => 0
-		myNetwork.activate([1,1]);
-		myNetwork.propagate(learningRate, [0]);
-	}
-
-	// Test the network
-	// console.log(myNetwork.activate([0,0])); // [0.015020775950893527]
-	// console.log(myNetwork.activate([0,1])); // [0.9815816381088985]
-	// console.log(myNetwork.activate([1,0])); // [0.9871822457132193]
-	// console.log(myNetwork.activate([1,1])); // [0.012950087641929467]
 	return myNetwork;
 }
 
 function calculateScore(input, network) {
 	// This function scores an input from 0...1 based on the trained neural network.
     var m = '';
-	var score=network.activate([input[0], input[1]]) // activating the network
+	var score=network.activate([input[0], input[1]]) // activating the network with input
 	console.log("score"+score);
 	var pscore=parseFloat(score).toFixed(3);
 	console.log("pscore = "+pscore);
@@ -68,14 +61,10 @@ function calculateScore(input, network) {
    
 
 function displayResults(textbox, network) {
-	var data=textbox // data from the HTML's textbox
-	data = data.replace(/(\r\n|\n|\r)/gm, ""); // cleaning data
-	// document.getElementById('textbox').value=textbox;
-	document.getElementById('results').innerHTML='Input data in text box'
-	let r = document.getElementById('textbox'); 
-    document.getElementById('results').innerHTML='Calculating...'
+    // data from the HTML's textbox
+	let data = textbox.replace(/(\r\n|\n|\r)/gm, ""); // cleaning data
+    document.getElementById('results').innerHTML='Calculating...';
     calculateScore(data, network);
-
 }
 
 export { displayResults, initNetwork };

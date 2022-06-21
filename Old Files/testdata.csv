@@ -1,4 +1,5 @@
 input,output
-good,1
-neutral,0
-bad,-1
+00, 0
+01, 1
+10, 1
+00, 0

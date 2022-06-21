@@ -6,8 +6,12 @@ function App() {
   const [selectedFile, setSelectedFile] = useState(); // keeps file
 	const [isFilePicked, setIsFilePicked] = useState(false); // keeps track of file
   const [textBox, setTextBox] = useState(""); // keeps track of text box
-  const [neuralNet, setNeuralNet] = useState(initNetwork()); // initalizes neural net
+  const [neuralNet, setNeuralNet] = useState(); // keeps track of neural net
 
+  useEffect( () => {
+    setNeuralNet(initNetwork());
+  }, []) // ensures initNetwork() only runs once
+  
   // FILE HANDLING
   const fileChangeHandler = (e) => {
 		setSelectedFile(e.target.files[0]);
