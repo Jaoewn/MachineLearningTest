@@ -1,16 +1,25 @@
 import { useEffect, useState } from 'react';
-import { createArray } from './components/train';
-import { displayResults, initNetwork } from './components/synaptic';
+// import { displayResults, initNetwork } from './components/synaptic';
+import { displayResults, initNetwork, updateNetwork } from './components/brain';
 
 function App() {
   const [selectedFile, setSelectedFile] = useState(); // keeps file
 	const [isFilePicked, setIsFilePicked] = useState(false); // keeps track of file
+  const [sentWord, setSentWord] = useState(""); // set sentiment word
+  const [sentiment, setSentiment] = useState(""); // set sentiment word
   const [textBox, setTextBox] = useState(""); // keeps track of text box
   const [neuralNet, setNeuralNet] = useState(); // keeps track of neural net
+  const [isNetinit, setIsNetInit] = useState(false);
 
   useEffect( () => {
     // setNeuralNet(initNetwork());
   }, []) // ensures initNetwork() only runs once
+
+  // HANDLE NETWORK INIT
+  const networkHandler = (e) => {
+    setNeuralNet(initNetwork());
+    setIsNetInit(true);
+  };
 
   // FILE HANDLING
   const fileChangeHandler = (e) => {
@@ -18,9 +27,24 @@ function App() {
 		setIsFilePicked(true);
 	};
 	const handleFileSubmission = () => {
-    console.log("submitted file!")
-    if (isFilePicked) {setNeuralNet(initNetwork(selectedFile))};
+    console.log("submitted file!");
+    //(isFilePicked ? setNeuralNet(initNetwork(selectedFile)) : setNeuralNet(initNetwork()));
+    (isFilePicked ? setNeuralNet(initNetwork(selectedFile)) : document.getElementById('results').innerHTML='PLEASE SELECT FILE BEFORE SUBMIT');
 	};
+
+  // SENTIMENT AHNDLING
+  const sentWordHandler = (e) => {
+    setSentWord(e.target.value);
+    console.log(sentWord);
+  }
+  const sentimentHandler = (e) => {
+    setSentiment(e.target.value);
+  }
+  const handleSentimentSubmission = () => {
+    console.log("word: ", sentWord);
+    console.log("sentiment: ", sentiment);
+    updateNetwork(sentWord, sentiment, neuralNet);
+  }
 
   // TEXTBOX HANDLING
   const textChangeHandler = (e) => {
@@ -35,10 +59,13 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>WELCOME TO MACHNE LEARNING TEST</h1>
-        <p>it is currently set up for XOR on textbox[0, 1]</p>
       </header>
 
       {/* MY CODE */}
+      <div>
+        <button onClick={networkHandler}>INITALIZE NEURAL NETWORK</button> 
+        {/* hidden={isNetinit ? "hidden" : ""} */}
+      </div>
       <div>
         <h3>INPUT TRAINING CSV HERE: </h3>
         <input
@@ -46,12 +73,24 @@ function App() {
           accept=".csv" 
           onChange={fileChangeHandler}
         />
-        <button hidden={isFilePicked ? "" : "hidden"} onClick={handleFileSubmission}>Submit</button>
+        <button onClick={handleFileSubmission}>Submit</button> 
+        {/* hidden={isFilePicked ? "" : "hidden"} */}
       </div>
       <div>
-        <div><textarea id="textbox" rows="2" cols="30" onChange={textChangeHandler}></textarea></div>
-        <button onClick={handleTextSubmission}>Submit</button>
-        <div id="results">PLEASE UPLOAD TRAINING CSV FIRST</div>
+        <h3>INPUT TRAINING WORD & SENTIMENT HERE: </h3>
+        <textarea id="textbox" rows="1" cols="30" onChange={sentWordHandler}></textarea>
+        <select defaultValue="" onChange={sentimentHandler} className="sentiment-select">
+          <option value="" disabled>Select Sentiment</option>
+          <option value="positive">Positive</option>
+          <option value="negative">Negative</option>
+        </select>
+        <button hidden={isNetinit ? "" : "hidden"} onClick={handleSentimentSubmission}>Submit</button>
+      </div>
+      <div>
+      <h3>INPUT TEST WORD HERE: </h3>
+        <textarea id="textbox" rows="1" cols="30" onChange={textChangeHandler}></textarea>
+        <button hidden={isNetinit ? "" : "hidden"} onClick={handleTextSubmission}>Submit</button>
+        <div id="results">PLEASE INIT THE NEURAL NETWORK</div>
       </div>
     </div>
   );
